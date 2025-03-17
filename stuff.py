@@ -49,7 +49,8 @@ def parser(file_path):
                     word += i[j]
                     j += 1
                 if word.isdigit():
-                    pass
+                    i = i.strip()
+                    lines_new.append(i)
                 elif word in key_words:
                     statement_assigner(lines_new, word)
                 else:
@@ -65,7 +66,8 @@ def parser(file_path):
 
 
 def hack_assembler():
-    lines_new = parser("Max.asm")
+    filename = input("Enter the name of the file you wish to assemble: ")
+    lines_new = parser(filename)
     print(lines_new)
 
 
