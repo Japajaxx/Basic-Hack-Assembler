@@ -23,55 +23,45 @@ key_words = {"R0": 0,
              "THAT": 4}
 
 
-def statement_assigner(lines_new, word):
-    lines_new.append("@" + str(key_words[word]))
-
-
 def parser(file_path):
+
+    def remove_whitespace_and_labels():
+        line_number = -1
+        for i in lines:
+            if i[0] != "\n":
+                i = i.strip()
+                if i[0] != "/":
+                    line_number += 1
+                    i = i.strip()
+                    if i[0] == "(":
+                        word = i[1:-1]
+                        if word not in key_words:
+                            key_words[word] = line_number
+                    else:
+                        lines_new.append(i)
+    
+    def symbols():
+        table_number = 16
+        for i in lines_new:
+            if i[0] == "@":
+                word = i[1:]
+                if word in key_words:
+                    lines_new[lines_new.index(i)] = "@" + str(key_words[word])
+                else:
+                    key_words[word] = table_number
+                    table_number += 1
+                    lines_new[lines_new.index(i)] = "@" + str(key_words[word])
+
     file = open(file_path, 'r')
     lines = file.readlines()
     file.close()
 
     lines_new = []
-    table_number = 16
-    line_number = -1
+    remove_whitespace_and_labels()
+    symbols()
 
-    for i in lines:
-        j = 0
-        while i[j] == " ":
-            j += 1
-        if(not((i[j: j + 2] == "//") or (i[j] == "\n"))):
-            line_number += 1
-
-            if(i[j] == "@"):
-                word = ""
-                j += 1
-                while (i[j] != "") and (i[j] != "\n"):
-                    word += i[j]
-                    j += 1
-                if word.isdigit():
-                    i = i.strip()
-                    lines_new.append(i)
-                elif word in key_words:
-                    statement_assigner(lines_new, word)
-                else:
-                    key_words[word] = table_number
-                    table_number += 1
-                    statement_assigner(lines_new, word)
-            elif(i[j] == "("):
-                word = ""
-                j += 1
-                while (i[j] != ")"):
-                    word += i[j]
-                    j += 1
-                if word not in key_words:
-                    key_words[word] = line_number
-
-            else:
-                i = i.strip()
-                lines_new.append(i)
-        
     return lines_new
+
 
 def code(parsed_lines):
 
@@ -151,7 +141,7 @@ def code(parsed_lines):
 
 def hack_assembler():
     # filename = input("Enter the name of the file you wish to assemble: ")
-    parsed_lines = parser("Add.asm")
+    parsed_lines = parser("Max.asm")
     finished = code(parsed_lines)
 
     for i in finished:
