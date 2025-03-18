@@ -45,7 +45,9 @@ def parser(file_path):
         for i in lines_new:
             if i[0] == "@":
                 word = i[1:]
-                if word in key_words:
+                if word.isdigit():
+                    pass
+                elif word in key_words:
                     lines_new[lines_new.index(i)] = "@" + str(key_words[word])
                 else:
                     key_words[word] = table_number
@@ -63,7 +65,7 @@ def parser(file_path):
     return lines_new
 
 
-def code(parsed_lines):
+def code(parsed_lines, filename):
 
     comp_table = {
         "0": "0101010",
@@ -118,11 +120,12 @@ def code(parsed_lines):
         "JMP": "111"
     }
     
-    binary_lines = []
+    hack_file = open(filename + (".hack"), "a")
+    j = 0
 
     for i in parsed_lines:
         if(i[0] == "@"):
-            binary_lines.append(bin(int(i[1:]))[2:].zfill(16))
+            hack_file.write(bin(int(i[1:]))[2:].zfill(16))
         else:
             comp = ""
             dest = ""
@@ -133,20 +136,21 @@ def code(parsed_lines):
             if ";" in i:
                 comp, jump = i.split(";")
             else:
-                comp = i;
-            binary_lines.append("111" + comp_table[comp] + dest_table[dest] + jump_table[jump])
+                comp = i
+            hack_file.write("111" + comp_table[comp] + dest_table[dest] + jump_table[jump])
+        
+        if j != len(parsed_lines) - 1:
+            hack_file.write("\n")
 
-    return binary_lines
+        j += 1
+    
+    hack_file.close()
 
 
 def hack_assembler():
     filename = input("Enter the name of the file you wish to assemble: ")
-    parsed_lines = parser(filename)
-    finished = code(parsed_lines)
-
-    for i in finished:
-        print(i)
-
+    parsed_lines = parser(filename + ".asm")
+    code(parsed_lines, filename)
 
 hack_assembler()
 
