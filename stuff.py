@@ -26,18 +26,18 @@ key_words = {"R0": 0,
 def parser(file_path):
 
     def remove_whitespace_and_labels():
-        line_number = -1
+        line_number = 0
         for i in lines:
             if i[0] != "\n":
                 i = i.strip()
                 if i[0] != "/":
-                    line_number += 1
                     i = i.strip()
                     if i[0] == "(":
                         word = i[1:-1]
                         if word not in key_words:
                             key_words[word] = line_number
                     else:
+                        line_number += 1
                         lines_new.append(i)
     
     def symbols():
@@ -140,8 +140,8 @@ def code(parsed_lines):
 
 
 def hack_assembler():
-    # filename = input("Enter the name of the file you wish to assemble: ")
-    parsed_lines = parser("Max.asm")
+    filename = input("Enter the name of the file you wish to assemble: ")
+    parsed_lines = parser(filename)
     finished = code(parsed_lines)
 
     for i in finished:
