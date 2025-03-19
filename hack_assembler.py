@@ -1,3 +1,5 @@
+import sys
+
 key_words = {"R0": 0,
              "R1": 1,
              "R2": 2,
@@ -148,9 +150,13 @@ def code(parsed_lines, filename):
 
 
 def hack_assembler():
-    filename = input("Enter the name of the file you wish to assemble: ")
-    parsed_lines = parser(filename + ".asm")
-    code(parsed_lines, filename)
+    if len(sys.argv) != 2:
+        print("Usage: python hack_assembler.py <filename>")
+        return
+    
+    filename = sys.argv[1]
+    parsed_lines = parser(filename)
+    code(parsed_lines, filename.replace(".asm", ""))
 
 hack_assembler()
 
