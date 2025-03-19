@@ -1,3 +1,5 @@
+#Call with "python hack_assembler.py <filename>"
+
 import sys
 
 key_words = {"R0": 0,
